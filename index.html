@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Indicadores - Arizon.ai</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="antialiased">
+
+    <div class="max-w-screen-2xl mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- === CABECERA === -->
+        <header class="bg-white shadow-sm border-b border-gray-200 p-6 rounded-lg mb-8">
+            <div class="flex flex-col gap-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <!-- Logo y Título -->
+                    <div class="flex items-center gap-4">
+                        <!-- Logo de Arizon con opción de carga -->
+                        <div class="flex-shrink-0 relative group">
+                            <div id="logo-container" class="h-16 w-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-all">
+                                <span id="logo-placeholder">A</span>
+                                <img id="logo-image" src="" alt="Arizon.ai Logo" class="h-full w-full object-contain hidden">
+                            </div>
+                            <!-- Botón para cambiar logo -->
+                            <button type="button" id="change-logo-btn" class="absolute -bottom-2 -right-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-1.5 shadow-md opacity-0 group-hover:opacity-100 transition-opacity" title="Cambiar logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                            <input type="file" id="logo-upload" accept="image/*" class="hidden">
+                        </div>
+                        <!-- Título -->
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900">Panel Revenue Operations</h1>
+                            <p class="text-lg text-blue-600 mt-1">Arizon.ai</p>
+                        </div>
+                    </div>
+
+                    <!-- Indicador de Progreso Global -->
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 min-w-[280px]">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Progreso Anual</span>
+                            <span id="progress-percentage" class="text-lg font-bold text-blue-600">0%</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span id="progress-text" class="text-sm font-semibold text-gray-700">0 / 48 semanas</span>
+                                    <button type="button" id="progress-details-btn" class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                        Ver detalle
+                                    </button>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                                    <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="progress-breakdown" class="hidden text-xs text-gray-600 mt-2 pt-2 border-t border-blue-200 space-y-1">
+                            <!-- Desglose por mes se insertará aquí dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                    <div class="inline-flex bg-gray-100 rounded-lg p-1" role="tablist" aria-label="Cambiar vista">
+                        <button type="button" data-view-target="dashboard" class="view-toggle px-4 py-2 rounded-md text-sm font-semibold text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-controls="dashboard-view">
+                            Dashboard
+                        </button>
+                        <button type="button" data-view-target="charts" class="view-toggle px-4 py-2 rounded-md text-sm font-semibold text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-controls="charts-view">
+                            📊 Gráficas
+                        </button>
+                        <button type="button" data-view-target="data-entry" class="view-toggle px-4 py-2 rounded-md text-sm font-semibold text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-controls="data-entry-view">
+                            Carga de datos
+                        </button>
+                        <button type="button" data-view-target="management" class="view-toggle px-4 py-2 rounded-md text-sm font-semibold text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-controls="data-management-view">
+                            Administrar datos
+                        </button>
+                        <button type="button" data-view-target="guide" class="view-toggle px-4 py-2 rounded-md text-sm font-semibold text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-controls="guide-view">
+                            📚 Guía de Indicadores
+                        </button>
+                    </div>
+
+                    <div id="period-filter-container" class="w-full sm:w-auto">
+                        <label for="master-filter" class="block text-sm font-medium text-gray-600">Ver Período:</label>
+                        <select id="master-filter" class="form-select w-full">
+                            <!-- Opciones se llenarán dinámicamente -->
+                        </select>
+                    </div>
+
+                    <!-- Botones de Backup/Restore -->
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="export-data-btn" class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm transition-colors" title="Descargar backup de todos los datos">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                            </svg>
+                            💾 Exportar Datos
+                        </button>
+                        <button type="button" id="import-data-btn" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors" title="Importar datos desde archivo de backup">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            📤 Importar Datos
+                        </button>
+                        <input type="file" id="import-file-input" accept=".json" class="hidden">
+                    </div>
+
+                    <!-- Indicador de último backup -->
+                    <div id="last-backup-indicator" class="text-xs text-gray-500 hidden">
+                        <span class="font-medium">Último backup:</span> <span id="last-backup-time">-</span>
+                    </div>
+                    <!-- Toast semanas pendientes -->
+                    <div id="pending-weeks-toast" class="hidden fixed top-6 right-6 z-50 bg-yellow-100 border border-yellow-400 text-yellow-900 px-6 py-4 rounded-lg shadow-lg flex items-center gap-4">
+                        <span class="font-bold text-lg" id="pending-weeks-count">0</span>
+                        <span class="text-sm">semanas pendientes de carga de datos</span>
+                        <button type="button" id="close-pending-weeks-toast" class="ml-2 text-yellow-700 hover:text-yellow-900">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section id="dashboard-view" class="space-y-8">
+        
+        <!-- Botón de Exportar a PDF para Dashboard -->
+        <div class="flex justify-end mb-4">
+            <button id="export-dashboard-pdf" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                </svg>
+                Exportar Dashboard a PDF
+            </button>
+        </div>
+        
+        <!-- === GRID DE KPIs === -->
+        <section id="kpi-grid">
+            
+            <!-- Sección Clientes -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-6 border-b border-gray-200 pb-2">👥 Clientes</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Clientes Activos 100%</h4>
+                    <p id="kpi-clientes-100" class="kpi-value">0</p>
+                    <p id="kpi-clientes-100-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Clientes Activos 50%</h4>
+                    <p id="kpi-clientes-50" class="kpi-value">0</p>
+                    <p id="kpi-clientes-50-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Clientes Morosos</h4>
+                    <p id="kpi-clientes-morosos" class="kpi-value">0</p>
+                    <p id="kpi-clientes-morosos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Clientes Perdidos</h4>
+                    <p id="kpi-clientes-perdidos" class="kpi-value">0</p>
+                    <p id="kpi-clientes-perdidos-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Leads y Conversiones -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">💡 Leads y Conversiones</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Leads Recibidos (Total)</h4>
+                    <p id="kpi-leads-recibidos" class="kpi-value">0</p>
+                    <p id="kpi-leads-recibidos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Leads Calificados (Total)</h4>
+                    <p id="kpi-leads-calificados" class="kpi-value">0</p>
+                    <p id="kpi-leads-calificados-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Leads Convertidos (Total)</h4>
+                    <p id="kpi-leads-convertidos" class="kpi-value">0</p>
+                    <p id="kpi-leads-convertidos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Conversaciones / Leads</h4>
+                    <p id="kpi-conversaciones-leads" class="kpi-value">0</p>
+                    <p id="kpi-conversaciones-leads-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Demos y Productos -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">🎥 Demos y Productos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Demos Realizados</h4>
+                    <p id="kpi-demos-realizados" class="kpi-value">0</p>
+                    <p id="kpi-demos-realizados-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Demos Exitosos</h4>
+                    <p id="kpi-demos-exitosos" class="kpi-value">0</p>
+                    <p id="kpi-demos-exitosos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">InfluVideos Vendidos</h4>
+                    <p id="kpi-influvideos-vendidos" class="kpi-value">0</p>
+                    <p id="kpi-influvideos-vendidos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Demos InfluVideos</h4>
+                    <p id="kpi-demos-influvideos" class="kpi-value">0</p>
+                    <p id="kpi-demos-influvideos-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Finanzas y Gastos -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">💰 Finanzas y Gastos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Cobranza Mensual ($)</h4>
+                    <p id="kpi-cobranza-usd" class="kpi-value">$0</p>
+                    <p id="kpi-cobranza-usd-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Cobranza Mensual (BCV)</h4>
+                    <p id="kpi-cobranza-bcv" class="kpi-value">Bs. 0</p>
+                    <p id="kpi-cobranza-bcv-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Cuentas por Cobrar ($)</h4>
+                    <p id="kpi-cxc" class="kpi-value">$0</p>
+                    <p id="kpi-cxc-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Inversión Ads ($)</h4>
+                    <p id="kpi-inversion-ads" class="kpi-value">$0</p>
+                    <p id="kpi-inversion-ads-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Gastos Fijos Mensuales ($)</h4>
+                    <p id="kpi-gastos-fijos" class="kpi-value">$0</p>
+                    <p id="kpi-gastos-fijos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Deuda Socios ($)</h4>
+                    <p id="kpi-deuda-socios" class="kpi-value">$0</p>
+                    <p id="kpi-deuda-socios-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Formas Generación Leads</h4>
+                    <p id="kpi-formas-leads" class="kpi-value">0</p>
+                    <p id="kpi-formas-leads-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Inversión Total Acumulada ($)</h4>
+                    <p id="kpi-inversion-total" class="kpi-value">$0</p>
+                    <p id="kpi-inversion-total-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Producción y Entrega -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">📦 Producción y Entrega</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">InfluVideos en Cola</h4>
+                    <p id="kpi-influvideos-cola" class="kpi-value">0</p>
+                    <p id="kpi-influvideos-cola-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">InfluVideos Entregados</h4>
+                    <p id="kpi-influvideos-entregados" class="kpi-value">0</p>
+                    <p id="kpi-influvideos-entregados-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Conversaciones Atendidas por Ari</h4>
+                    <p id="kpi-conversaciones-ari" class="kpi-value">0</p>
+                    <p id="kpi-conversaciones-ari-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Tiempo Promedio Onboarding (días)</h4>
+                    <p id="kpi-tiempo-onboarding" class="kpi-value">0</p>
+                    <p id="kpi-tiempo-onboarding-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Rentabilidad por Producto -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">💼 Rentabilidad por Producto</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">MRR Total ($)</h4>
+                    <p id="kpi-mrr-total" class="kpi-value">$0</p>
+                    <p id="kpi-mrr-total-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">ARR Proyectado ($)</h4>
+                    <p id="kpi-arr" class="kpi-value">$0</p>
+                    <p id="kpi-arr-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">MRR Arizon Pro ($)</h4>
+                    <p id="kpi-mrr-pro" class="kpi-value">$0</p>
+                    <p id="kpi-mrr-pro-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">MRR Arizon Max ($)</h4>
+                    <p id="kpi-mrr-max" class="kpi-value">$0</p>
+                    <p id="kpi-mrr-max-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Ciclo de Vida del Cliente -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">⏱️ Ciclo de Vida del Cliente</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Clientes Nuevos Activados</h4>
+                    <p id="kpi-clientes-nuevos" class="kpi-value">0</p>
+                    <p id="kpi-clientes-nuevos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Churn Semanal</h4>
+                    <p id="kpi-churn-semanal" class="kpi-value">0</p>
+                    <p id="kpi-churn-semanal-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Churn Rate (%)</h4>
+                    <p id="kpi-churn-rate" class="kpi-value">0%</p>
+                    <p id="kpi-churn-rate-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Ciclo de Venta Total (días)</h4>
+                    <p id="kpi-ciclo-venta" class="kpi-value">0</p>
+                    <p id="kpi-ciclo-venta-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Calidad y Experiencia -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">⭐ Calidad y Experiencia</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">NPS Semanal</h4>
+                    <p id="kpi-nps" class="kpi-value">0</p>
+                    <p id="kpi-nps-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Health Score Promedio</h4>
+                    <p id="kpi-health-score" class="kpi-value">0</p>
+                    <p id="kpi-health-score-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">CSAT Score</h4>
+                    <p id="kpi-csat" class="kpi-value">0.0</p>
+                    <p id="kpi-csat-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Uptime Ari (%)</h4>
+                    <p id="kpi-uptime" class="kpi-value">0.0%</p>
+                    <p id="kpi-uptime-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Métricas Estratégicas (Unit Economics) -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">📊 Métricas Estratégicas (Unit Economics)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">LTV (Lifetime Value)</h4>
+                    <p id="kpi-ltv" class="kpi-value">$0</p>
+                    <p id="kpi-ltv-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">LTV:CAC Ratio</h4>
+                    <p id="kpi-ltv-cac-ratio" class="kpi-value">0.0x</p>
+                    <p id="kpi-ltv-cac-ratio-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">CAC Payback (meses)</h4>
+                    <p id="kpi-cac-payback" class="kpi-value">0</p>
+                    <p id="kpi-cac-payback-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Gross Margin (%)</h4>
+                    <p id="kpi-gross-margin" class="kpi-value">0%</p>
+                    <p id="kpi-gross-margin-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">NRR (Net Revenue Retention)</h4>
+                    <p id="kpi-nrr" class="kpi-value">0%</p>
+                    <p id="kpi-nrr-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Quick Ratio</h4>
+                    <p id="kpi-quick-ratio" class="kpi-value">0.0x</p>
+                    <p id="kpi-quick-ratio-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Rule of 40</h4>
+                    <p id="kpi-rule-of-40" class="kpi-value">0%</p>
+                    <p id="kpi-rule-of-40-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">CAC Facebook</h4>
+                    <p id="kpi-cac-facebook" class="kpi-value">$0</p>
+                    <p id="kpi-cac-facebook-context" class="kpi-context"></p>
+                </div>
+            </div>
+
+            <!-- Sección Soporte y Operaciones -->
+            <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">🛠️ Soporte y Operaciones</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Tickets Abiertos</h4>
+                    <p id="kpi-tickets-abiertos" class="kpi-value">0</p>
+                    <p id="kpi-tickets-abiertos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Tickets Resueltos</h4>
+                    <p id="kpi-tickets-resueltos" class="kpi-value">0</p>
+                    <p id="kpi-tickets-resueltos-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Tasa de Resolución (%)</h4>
+                    <p id="kpi-tasa-resolucion" class="kpi-value">0%</p>
+                    <p id="kpi-tasa-resolucion-context" class="kpi-context"></p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="kpi-title">Error Rate Ari (%)</h4>
+                    <p id="kpi-error-rate" class="kpi-value">0.0%</p>
+                    <p id="kpi-error-rate-context" class="kpi-context"></p>
+                </div>
+            </div>
+    </section>
+        </section>
+
+    <!-- === VISTA DE GRÁFICAS === -->
+    <section id="charts-view" class="hidden space-y-8">
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-sm border border-blue-200 p-6 mb-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">📊 Análisis Visual de Tendencias</h2>
+                    <p class="text-sm text-gray-600">Visualización completa de todas las métricas y tendencias del negocio en gráficas interactivas.</p>
+                </div>
+                <button id="export-charts-pdf" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors duration-200 whitespace-nowrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                    </svg>
+                    Exportar Gráficas a PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- === SECCIÓN DE GRÁFICOS === -->
+        <section id="charts-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Funnel de Leads (Tendencia Anual)</h3>
+                <canvas id="leadFunnelChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Análisis de Rentabilidad (Tendencia Anual)</h3>
+                <canvas id="profitabilityChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Tasas de Conversión (Tendencia Anual)</h3>
+                <canvas id="conversionRateChart"></canvas>
+            </div>
+
+            <!-- GRÁFICA REEMPLAZADA 1 -->
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Leads por Canal (Tendencia Anual)</h3>
+                <canvas id="leadsByChannelChart"></canvas>
+            </div>
+            
+            <!-- GRÁFICA REEMPLAZADA 2 -->
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Costo por Adquisición (CPA) por Canal</h3>
+                <canvas id="cpaByChannelChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Tendencia de Salud de Clientes (Anual)</h3>
+                <canvas id="clientHealthChart"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Tendencia de Tasa de Éxito de Demos (%)</h3>
+                <canvas id="demoSuccessTrendChart"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Crecimiento Neto de Clientes</h3>
+                <canvas id="clientNetGrowthChart"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Rentabilidad de Adquisición (AOV vs. CPA)</h3>
+                <canvas id="aovVsCpaChart"></canvas>
+            </div>
+
+            <!-- NUEVAS GRÁFICAS TOP 10 -->
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">MRR por Plan (Tendencia Anual)</h3>
+                <canvas id="mrrByPlanChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Churn y Nuevos Clientes</h3>
+                <canvas id="churnVsNewChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Performance de Ari (Conversaciones)</h3>
+                <canvas id="ariPerformanceChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Producción de InfluVideos</h3>
+                <canvas id="influvideoProductionChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Evolución del NPS</h3>
+                <canvas id="npsEvolutionChart"></canvas>
+            </div>
+
+            <!-- NUEVAS GRÁFICAS ESTRATÉGICAS -->
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">LTV:CAC Ratio Evolution</h3>
+                <canvas id="ltvCacRatioChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">NRR & Quick Ratio Trends</h3>
+                <canvas id="nrrQuickRatioChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Rule of 40 Dashboard</h3>
+                <canvas id="ruleOf40Chart"></canvas>
+            </div>
+        </section>
+        </section>
+
+        <!-- === VISTA DE GUÍA DE INDICADORES === -->
+        <section id="guide-view" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg shadow-sm border border-purple-200 p-6 mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">📚 Guía de Indicadores</h2>
+                <p class="text-gray-700">Manual completo para entender cada métrica, gráfica y cómo interpretarlas para tomar decisiones estratégicas.</p>
+            </div>
+
+            <!-- Índice de Navegación Rápida -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">📑 Índice Rápido</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <a href="#guide-kpis" class="p-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors">
+                        <span class="font-semibold text-blue-900">📊 KPIs del Dashboard</span>
+                    </a>
+                    <a href="#guide-charts" class="p-3 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors">
+                        <span class="font-semibold text-green-900">📈 Gráficas y Tendencias</span>
+                    </a>
+                    <a href="#guide-form" class="p-3 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors">
+                        <span class="font-semibold text-purple-900">✍️ Campos del Formulario</span>
+                    </a>
+                    <a href="#guide-strategic" class="p-3 bg-orange-50 hover:bg-orange-100 rounded-lg border border-orange-200 transition-colors">
+                        <span class="font-semibold text-orange-900">🎯 Métricas Estratégicas</span>
+                    </a>
+                    <a href="#guide-alerts" class="p-3 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors">
+                        <span class="font-semibold text-red-900">🚦 Sistema de Alertas</span>
+                    </a>
+                    <a href="#guide-interpretation" class="p-3 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors">
+                        <span class="font-semibold text-indigo-900">💡 Cómo Interpretar</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sección: KPIs del Dashboard -->
+            <div id="guide-kpis" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-blue-500 pb-2">📊 KPIs del Dashboard</h3>
+                
+                <div class="space-y-6">
+                    <!-- Clientes -->
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">👥 Sección de Clientes</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Clientes Activos 100%</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Clientes que están utilizando el servicio al 100% de su capacidad contratada.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Un número alto indica alta adopción y satisfacción. Estos clientes tienen mayor probabilidad de renovar.</p>
+                                <p class="text-sm text-gray-600"><strong>Meta recomendada:</strong> &gt;70% del total de clientes activos.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Clientes Activos 50%</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Clientes usando el servicio al 50% de capacidad.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Oportunidad de upsell o señal de que necesitan soporte. Requieren atención del equipo de éxito del cliente.</p>
+                                <p class="text-sm text-gray-600"><strong>Acción recomendada:</strong> Contactar para identificar barreras de adopción.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Clientes Morosos</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Clientes con pagos pendientes o vencidos.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Riesgo de churn alto. Afecta cash flow y MRR.</p>
+                                <p class="text-sm text-red-600"><strong>⚠️ Crítico:</strong> Debe mantenerse &lt;5% del total de clientes.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Clientes Perdidos (Churn)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Clientes que cancelaron el servicio en el período.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Indica insatisfacción, problemas de producto o competencia. El churn rate mensual debe ser &lt;5%.</p>
+                                <p class="text-sm text-gray-600"><strong>Fórmula:</strong> (Clientes perdidos / Clientes al inicio) × 100</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leads y Conversiones -->
+                    <div class="border-l-4 border-green-500 pl-4 mt-8">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">💡 Leads y Conversiones</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Leads Recibidos (Total)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Total de leads entrantes de todos los canales (ads, orgánico, referidos).</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Volumen de oportunidades de venta. Debe crecer mes a mes para escalar el negocio.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Leads Calificados</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Leads que cumplen criterios de buyer persona (presupuesto, necesidad, timing).</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Calidad del lead gen. Tasa de calificación ideal: 40-60%.</p>
+                                <p class="text-sm text-gray-600"><strong>Fórmula:</strong> (Leads calificados / Leads recibidos) × 100</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Conversión a Cliente</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> % de leads que se convierten en clientes pagadores.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Eficiencia del proceso de ventas. Benchmark SaaS B2B: 15-25%.</p>
+                                <p class="text-sm text-green-600"><strong>✅ Excelente:</strong> &gt;20% | <strong class="text-yellow-600">⚠️ Revisar:</strong> &lt;10%</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Demos Agendadas / Realizadas</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Número de demos programadas vs. efectivamente realizadas.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> La tasa de show-up debe ser &gt;70%. Si es baja, revisar calidad de leads o proceso de agendamiento.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ingresos -->
+                    <div class="border-l-4 border-purple-500 pl-4 mt-8">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">💰 Ingresos</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Ingresos Totales ($)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Total de ingresos facturados en el período (MRR + one-time fees).</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Indicador de salud financiera. Debe crecer consistentemente mes a mes.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">MRR (Monthly Recurring Revenue)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Ingresos recurrentes mensuales predecibles.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Métrica #1 en SaaS. MRR creciente = negocio escalable y predecible.</p>
+                                <p class="text-sm text-gray-600"><strong>Meta de crecimiento:</strong> +10-20% mensual en etapa de crecimiento.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">AOV (Average Order Value)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Valor promedio del primer contrato de un cliente nuevo.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Indica el plan promedio adquirido. AOV alto = clientes enterprise, AOV bajo = SMB.</p>
+                                <p class="text-sm text-gray-600"><strong>Estrategia:</strong> Incrementar AOV mediante upsells en onboarding.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Margen Neto ($)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Cobranza - Gastos Totales = Ganancia neta.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Rentabilidad real del negocio. Debe ser positivo (unit economics saludable).</p>
+                                <p class="text-sm text-red-600"><strong>⚠️ Alerta:</strong> Margen negativo sostenido indica problemas de costos o pricing.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Costos y CAC -->
+                    <div class="border-l-4 border-red-500 pl-4 mt-8">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">💸 Costos y Adquisición</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Gastos Totales ($)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Suma de todos los gastos operativos (nómina + ads + infraestructura + servicios).</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Control de gastos es clave para rentabilidad. Compara vs. ingresos para ver margen.</p>
+                                <p class="text-sm text-gray-600"><strong>Regla general:</strong> Gastos no deben superar 80% de ingresos en fase de crecimiento.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">CAC (Customer Acquisition Cost)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Costo promedio de adquirir un nuevo cliente.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Fórmula:</strong> (Inversión total en marketing + ventas) / Número de nuevos clientes</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> CAC bajo + alto volumen = eficiencia. Debe compararse con LTV.</p>
+                                <p class="text-sm text-green-600"><strong>✅ Target:</strong> Ratio LTV:CAC de 3:1 o superior.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">CAC por Canal (Facebook, Instagram, TikTok)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Costo de adquisición separado por canal de marketing.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Identifica canales más eficientes. Reasigna presupuesto a canales con menor CAC.</p>
+                                <p class="text-sm text-gray-600"><strong>Acción:</strong> Si CAC de un canal &gt;50% del AOV, revisar targeting o creativos.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Gross Margin (%)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> % de ingresos que queda después de costos directos del servicio.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Fórmula:</strong> ((Ingresos - Costos del servicio) / Ingresos) × 100</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Margen alto = negocio escalable. SaaS típico: 70-85%.</p>
+                                <p class="text-sm text-green-600"><strong>✅ Excelente:</strong> &gt;80% | <strong class="text-yellow-600">⚠️ Revisar:</strong> &lt;60%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Métricas de Calidad -->
+                    <div class="border-l-4 border-teal-500 pl-4 mt-8">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">⭐ Métricas de Calidad y Soporte</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">NPS (Net Promoter Score)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Probabilidad de que clientes recomienden tu producto (escala -100 a +100).</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Fórmula:</strong> % Promotores (9-10) - % Detractores (0-6)</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Indicador de lealtad y satisfacción. NPS &gt;50 = excelente, NPS &lt;0 = crisis.</p>
+                                <p class="text-sm text-green-600"><strong>✅ World-class:</strong> &gt;70 | <strong class="text-blue-600">Bueno:</strong> 30-70 | <strong class="text-red-600">⚠️ Crítico:</strong> &lt;0</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">CSAT Score (Customer Satisfaction)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Satisfacción del cliente post-interacción (escala 1-5).</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Mide calidad de servicio a corto plazo. Encuesta después de soporte o demos.</p>
+                                <p class="text-sm text-green-600"><strong>✅ Target:</strong> Promedio &gt;4.0 / 5.0</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Tickets Abiertos / Resueltos</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Volumen de tickets de soporte creados vs. cerrados.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Si tickets abiertos &gt; resueltos, el backlog crece. Impacta satisfacción.</p>
+                                <p class="text-sm text-gray-600"><strong>Meta:</strong> Tasa de resolución &gt;95%, tiempo promedio &lt;24 horas.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Uptime de Ari (%)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> % de tiempo que el chatbot Ari está disponible y funcional.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Uptime bajo = pérdida de conversaciones y ventas. Impacta experiencia del cliente.</p>
+                                <p class="text-sm text-green-600"><strong>✅ Target:</strong> &gt;99.5% uptime (estándar SLA enterprise)</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Error Rate de Ari (%)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> % de conversaciones donde Ari falla o da respuestas incorrectas.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Error rate alto = reentrenamiento necesario. Afecta confianza del usuario.</p>
+                                <p class="text-sm text-yellow-600"><strong>⚠️ Target:</strong> &lt;5% error rate</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Métricas Operacionales -->
+                    <div class="border-l-4 border-indigo-500 pl-4 mt-8">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">🤖 Métricas Operacionales</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Conversaciones de Ari</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Número total de conversaciones atendidas por el chatbot.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Alto volumen = adopción del bot. Correlaciona con engagement de clientes.</p>
+                                <p class="text-sm text-gray-600"><strong>Tendencia esperada:</strong> Crecimiento paralelo a base de clientes activos.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Producción de InfluVideos</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Cantidad de videos producidos para clientes mensualmente.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Indicador de actividad de clientes. Alta producción = clientes activos y contentos.</p>
+                                <p class="text-sm text-gray-600"><strong>Correlación:</strong> Clientes con producción constante tienen menor churn.</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">MRR por Plan (Mini, Pro, Max, Wari)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Distribución de MRR por tipo de plan/producto.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Identifica planes más rentables. Si mucho Mini y poco Max, crear estrategia de upgrade.</p>
+                                <p class="text-sm text-gray-600"><strong>Estrategia:</strong> Balance entre volumen (Mini/Pro) y ticket alto (Max/Wari).</p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-2">Expansion MRR / Contraction MRR</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> MRR ganado por upsells vs. MRR perdido por downgrades.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Expansion &gt; Contraction = crecimiento desde base existente. Clave para NRR &gt;100%.</p>
+                                <p class="text-sm text-green-600"><strong>✅ Target:</strong> Expansion MRR debe ser 3-4x mayor que Contraction MRR.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Métricas Estratégicas -->
+            <div id="guide-strategic" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-orange-500 pb-2">🎯 Métricas Estratégicas Avanzadas</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-lg border border-orange-200">
+                        <h5 class="font-semibold text-gray-800 mb-2">💎 LTV (Lifetime Value)</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Valor total que un cliente genera durante toda su relación con la empresa.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Fórmula:</strong> (MRR promedio × Gross Margin %) / Churn Rate</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Indica cuánto puedes invertir en adquirir un cliente. LTV alto = negocio sostenible.</p>
+                        <p class="text-sm text-green-600"><strong>✅ Benchmark:</strong> LTV debe ser 3x mayor que CAC (ratio 3:1).</p>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+                        <h5 class="font-semibold text-gray-800 mb-2">⏱️ CAC Payback Period</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Meses necesarios para recuperar el costo de adquisición de un cliente.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Fórmula:</strong> CAC / (MRR promedio × Gross Margin %)</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Tiempo que tarda en ser rentable un cliente.</p>
+                        <p class="text-sm text-green-600"><strong>✅ Excelente:</strong> &lt;12 meses | <strong class="text-yellow-600">⚠️ Revisar:</strong> &gt;18 meses</p>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-green-50 to-teal-50 p-4 rounded-lg border border-green-200">
+                        <h5 class="font-semibold text-gray-800 mb-2">📈 NRR (Net Revenue Retention)</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> % de ingresos retenidos de clientes existentes (incluyendo expansion y churn).</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Fórmula:</strong> ((MRR fin - MRR nuevos clientes) / MRR inicio) × 100</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> NRR &gt;100% = clientes existentes gastan más (upsells). NRR &lt;100% = pérdida neta por churn.</p>
+                        <p class="text-sm text-green-600"><strong>✅ World-class:</strong> &gt;120% | <strong class="text-blue-600">Bueno:</strong> 100-110%</p>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
+                        <h5 class="font-semibold text-gray-800 mb-2">⚡ Quick Ratio (Growth Efficiency)</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Velocidad de crecimiento vs. pérdida de ingresos.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Fórmula:</strong> (Nuevo MRR + Expansion MRR) / (Churn MRR + Contraction MRR)</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Ratio &gt;4 = crecimiento saludable. Ratio &lt;1 = negocio decreciente.</p>
+                        <p class="text-sm text-green-600"><strong>✅ Excelente:</strong> &gt;4x | <strong class="text-red-600">⚠️ Crítico:</strong> &lt;2x</p>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border border-yellow-200">
+                        <h5 class="font-semibold text-gray-800 mb-2">🏆 Rule of 40</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Balance entre crecimiento y rentabilidad.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Fórmula:</strong> Growth Rate % + Profit Margin %</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Resultado ≥40% = empresa SaaS saludable. Puedes sacrificar margen por crecimiento o viceversa.</p>
+                        <p class="text-sm text-green-600"><strong>✅ World-class:</strong> &gt;50% | <strong class="text-blue-600">Bueno:</strong> 40-50% | <strong class="text-yellow-600">⚠️ Revisar:</strong> &lt;40%</p>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg border border-indigo-200">
+                        <h5 class="font-semibold text-gray-800 mb-2">❤️ Health Score (Salud del Cliente)</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué mide:</strong> Índice compuesto de salud del cliente (0-100).</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Factores:</strong> Uso de Ari, NPS, pagos a tiempo, engagement, tickets abiertos.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Cómo interpretarlo:</strong> Score bajo = riesgo de churn alto. Requiere intervención inmediata de CS.</p>
+                        <p class="text-sm text-green-600"><strong>✅ Saludable:</strong> &gt;70 | <strong class="text-yellow-600">⚠️ En riesgo:</strong> 40-70 | <strong class="text-red-600">🚨 Crítico:</strong> &lt;40</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Sistema de Alertas -->
+            <div id="guide-alerts" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-red-500 pb-2">🚦 Sistema de Alertas (Semáforo)</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-4">Cada KPI tiene un código de color que indica su estado frente a las metas definidas:</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-16 h-16 rounded-lg border-4 border-green-500 flex items-center justify-center bg-white">
+                                    <span class="text-2xl">✅</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-green-700">Verde - Excelente</h5>
+                                    <p class="text-sm text-gray-600">El KPI supera las metas establecidas. Continuar con la estrategia actual.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="w-16 h-16 rounded-lg border-4 border-blue-500 flex items-center justify-center bg-white">
+                                    <span class="text-2xl">👍</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-blue-700">Azul - Bueno</h5>
+                                    <p class="text-sm text-gray-600">El KPI está dentro del rango aceptable. Monitorear de cerca.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="w-16 h-16 rounded-lg border-4 border-yellow-500 flex items-center justify-center bg-white">
+                                    <span class="text-2xl">⚠️</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-yellow-700">Amarillo - Advertencia</h5>
+                                    <p class="text-sm text-gray-600">El KPI está por debajo de la meta. Requiere atención y plan de acción.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="w-16 h-16 rounded-lg border-4 border-red-500 flex items-center justify-center bg-white">
+                                    <span class="text-2xl">🚨</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-red-700">Rojo - Crítico</h5>
+                                    <p class="text-sm text-gray-600">El KPI está en zona de riesgo. Requiere acción inmediata.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Gráficas -->
+            <div id="guide-charts" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-green-500 pb-2">📈 Gráficas y Tendencias</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">📊 Funnel de Leads</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Visualización del embudo de ventas (Recibidos → Calificados → Convertidos).</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Identifica cuellos de botella. Si caída grande entre calificados y convertidos, revisar proceso de cierre.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">💰 Análisis de Rentabilidad</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Cobranza vs. Gastos vs. Margen Neto mensual.</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Identifica meses con margen negativo para ajustar gastos o pricing.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">📉 Tasas de Conversión</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> % de calificación y % de cierre mes a mes.</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Detecta tendencias. Si % de cierre cae, investigar objeciones comunes o calidad de leads.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">🎯 Leads por Canal</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Distribución de leads entre Ads, Orgánico y Referidos.</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Identifica canales más productivos. Reasigna presupuesto a canales con mejor ROI.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">💸 CPA por Canal</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Costo por Adquisición en Facebook, Instagram, TikTok.</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Compara eficiencia de canales pagados. CPA bajo + alto volumen = canal ganador.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">💚 MRR por Plan</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Distribución de MRR entre Mini, Pro, Max, Wari.</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Identifica planes más rentables. Si muchos Mini, crear estrategia de upgrade a Pro/Max.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">🔄 Churn y Nuevos Clientes</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Comparación mensual de clientes que entran vs. salen.</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Si churn > nuevos clientes, el negocio decrece. Urgente: mejorar retención.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">🤖 Performance de Ari</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Conversaciones atendidas por el chatbot Ari.</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Si cae, revisar integración o training del bot. Impacta en experiencia de cliente.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">🎬 Producción de InfluVideos</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Cantidad de videos producidos mensualmente.</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> Correlaciona con MRR. Alta producción = clientes activos y contentos.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">⭐ Evolución del NPS</h5>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Qué muestra:</strong> Tendencia de satisfacción del cliente (Net Promoter Score).</p>
+                        <p class="text-sm text-gray-700"><strong>Cómo usarlo:</strong> NPS &gt;50 = excelente. NPS &lt;0 = urgente mejorar producto/servicio. Indica probabilidad de referidos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Campos del Formulario -->
+            <div id="guide-form" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-purple-500 pb-2">✍️ Guía de Carga de Datos</h3>
+                
+                <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6">
+                    <h4 class="font-semibold text-blue-900 mb-2">💡 Consejos para cargar datos:</h4>
+                    <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
+                        <li>Carga datos semanalmente para tener visibilidad en tiempo real</li>
+                        <li>Los consolidados mensuales y anuales se calculan automáticamente</li>
+                        <li>Si un campo no aplica, déjalo en 0</li>
+                        <li>Usa datos reales de tus sistemas (CRM, facturación, analytics)</li>
+                        <li>Revisa el dashboard después de cargar para validar coherencia</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">📅 Mes y Semana</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Selecciona el mes y la semana correspondiente (1-4). Esto organiza los datos cronológicamente.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">👥 Clientes Activos 100% / 50%</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Cuenta cuántos clientes están usando tu servicio al 100% o al 50% de su capacidad contratada. Obtén este dato de tu plataforma de uso/analytics.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">⚠️ Clientes Morosos</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Número de clientes con pagos vencidos. Obtén este dato de tu sistema de facturación (facturas vencidas &gt;15 días).</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">📉 Clientes Perdidos</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Clientes que cancelaron en la semana. Obtén este dato de cancelaciones formales o no renovaciones.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">🔥 Leads Recibidos / Calificados</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Total de leads de todos los canales vs. los que calificas como MQL. Obtén de tu CRM (HubSpot, Pipedrive, etc.).</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">📞 Demos Agendadas / Realizadas</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Demos programadas en calendar vs. las que realmente ocurrieron (no-shows excluidos).</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">💰 Cobranza Total ($)</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Dinero efectivamente cobrado (no facturado). Usa datos de tu cuenta bancaria o gateway de pagos.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">💸 Gastos Totales ($)</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Suma de todos los gastos: nómina + ads + infraestructura + servicios. Usa tu contabilidad.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">📱 Inversión por Canal (Facebook, Instagram, TikTok)</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Gasto en ads de cada plataforma. Obtén de Meta Ads Manager y TikTok Ads.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">🎫 Tickets Abiertos / Resueltos</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Tickets de soporte creados vs. cerrados en la semana. Obtén de tu sistema de tickets (Zendesk, Freshdesk, etc.).</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">⭐ CSAT Score</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> Customer Satisfaction Score promedio (escala 1-5). Calcula el promedio de encuestas post-interacción.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">⚙️ Uptime de Ari (%)</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> % de disponibilidad del chatbot. Calcula: (tiempo activo / tiempo total) × 100. Obtén de monitoring tools.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-gray-800 mb-2">🚨 Error Rate de Ari (%)</h5>
+                        <p class="text-sm text-gray-700"><strong>Qué cargar:</strong> % de conversaciones con errores o fallbacks. Obtén de logs de Ari.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Interpretación para Ejecutivos -->
+            <div id="guide-interpretation" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-indigo-500 pb-2">💡 Cómo Interpretar para Tomar Decisiones</h3>
+                
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-5 rounded-lg border-l-4 border-blue-500">
+                        <h4 class="font-bold text-blue-900 mb-3">🎯 Escenario 1: Crecimiento de MRR estancado</h4>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Síntomas:</strong> MRR plano, pocos clientes nuevos, NRR &lt;100%</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Diagnóstico:</strong> Problema de adquisición y/o retención</p>
+                        <p class="text-sm text-gray-700"><strong>Acciones:</strong></p>
+                        <ul class="text-sm text-gray-700 list-disc list-inside ml-4">
+                            <li>Incrementar inversión en canales con CAC bajo</li>
+                            <li>Lanzar programa de upsell para clientes existentes</li>
+                            <li>Investigar causas de churn (exit interviews)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-red-50 to-orange-50 p-5 rounded-lg border-l-4 border-red-500">
+                        <h4 class="font-bold text-red-900 mb-3">🚨 Escenario 2: Churn Rate alto (&gt;8%)</h4>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Síntomas:</strong> Muchos clientes perdidos, Health Score bajo, NPS bajando</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Diagnóstico:</strong> Insatisfacción del cliente o mal fit producto-mercado</p>
+                        <p class="text-sm text-gray-700"><strong>Acciones:</strong></p>
+                        <ul class="text-sm text-gray-700 list-disc list-inside ml-4">
+                            <li>Pausar adquisición y enfocarse en retención</li>
+                            <li>Implementar programa de Customer Success proactivo</li>
+                            <li>Analizar feedback de clientes perdidos (product gaps)</li>
+                            <li>Mejorar onboarding (primeros 90 días críticos)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-lg border-l-4 border-green-500">
+                        <h4 class="font-bold text-green-900 mb-3">💰 Escenario 3: CAC muy alto vs. LTV</h4>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Síntomas:</strong> LTV:CAC &lt;3:1, CAC Payback &gt;18 meses, margen neto negativo</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Diagnóstico:</strong> Unit economics no sostenibles</p>
+                        <p class="text-sm text-gray-700"><strong>Acciones:</strong></p>
+                        <ul class="text-sm text-gray-700 list-disc list-inside ml-4">
+                            <li>Optimizar campañas de ads (reducir CPA)</li>
+                            <li>Incrementar pricing (si mercado lo permite)</li>
+                            <li>Mejorar tasas de conversión (lead → cliente)</li>
+                            <li>Enfocarse en canales orgánicos (SEO, referidos)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-5 rounded-lg border-l-4 border-purple-500">
+                        <h4 class="font-bold text-purple-900 mb-3">📈 Escenario 4: Rule of 40 &lt; 40%</h4>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Síntomas:</strong> Crecimiento lento + márgenes bajos</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Diagnóstico:</strong> Negocio no eficiente (ni crece rápido ni es rentable)</p>
+                        <p class="text-sm text-gray-700"><strong>Acciones:</strong></p>
+                        <ul class="text-sm text-gray-700 list-disc list-inside ml-4">
+                            <li><strong>Opción A (Crecimiento):</strong> Sacrificar margen temporalmente, invertir agresivamente en adquisición</li>
+                            <li><strong>Opción B (Rentabilidad):</strong> Reducir gastos, optimizar operaciones, aumentar precios</li>
+                            <li>Elegir estrategia según etapa de la empresa y capital disponible</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-yellow-50 to-amber-50 p-5 rounded-lg border-l-4 border-yellow-500">
+                        <h4 class="font-bold text-yellow-900 mb-3">⚡ Escenario 5: Quick Ratio &lt; 2x</h4>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Síntomas:</strong> Crecimiento lento, churn alto, pocas expansiones</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Diagnóstico:</strong> Velocidad de crecimiento insuficiente</p>
+                        <p class="text-sm text-gray-700"><strong>Acciones:</strong></p>
+                        <ul class="text-sm text-gray-700 list-disc list-inside ml-4">
+                            <li>Implementar estrategia de expansion revenue (upsells)</li>
+                            <li>Reducir churn con mejoras de producto</li>
+                            <li>Acelerar adquisición de nuevos clientes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer de la guía -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg p-6 text-center">
+                <h3 class="text-xl font-bold mb-2">🎯 Dashboard listo para usar</h3>
+                <p class="text-indigo-100">Esta guía te ayudará a tomar decisiones basadas en datos. Revisa semanalmente tus KPIs y actúa proactivamente.</p>
+                <p class="text-indigo-200 text-sm mt-3">💡 Tip: Comparte este dashboard con tu equipo ejecutivo en reuniones de estrategia.</p>
+            </div>
+        </section>
+
+        <!-- === VISTA DE CARGA DE DATOS === -->
+        <section id="data-entry-view" class="hidden space-y-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-2">Carga de datos semanales</h2>
+                <p class="text-sm text-gray-500 mb-6">Completa los indicadores para la semana seleccionada; el dashboard consolidará automáticamente los acumulados mensuales y anuales.</p>
+
+                <form id="data-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+                    <!-- Columna 1 -->
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2 mb-4">Período</h4>
+                        <div>
+                            <label for="month-select" class="form-label">Mes</label>
+                            <select id="month-select" name="month" class="form-select">
+                                <option>Enero</option>
+                                <option>Febrero</option>
+                                <option>Marzo</option>
+                                <option>Abril</option>
+                                <option>Mayo</option>
+                                <option>Junio</option>
+                                <option>Julio</option>
+                                <option>Agosto</option>
+                                <option>Septiembre</option>
+                                <option>Octubre</option>
+                                <option>Noviembre</option>
+                                <option>Diciembre</option>
+                            </select>
+                        </div>
+                        <div class="mt-4">
+                            <label for="week-select" class="form-label">Semana</label>
+                            <select id="week-select" name="week" class="form-select">
+                                <option value="0">Semana 1</option>
+                                <option value="1">Semana 2</option>
+                                <option value="2">Semana 3</option>
+                                <option value="3">Semana 4</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Columna 2 -->
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2 mb-4">Leads y Demos</h4>
+                        <div>
+                            <label for="leads-recibidos" class="form-label">Leads Recibidos (Semana)</label>
+                            <input type="number" name="leadsRecibidos" id="leads-recibidos" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="leads-calificados" class="form-label">Leads Calificados (Semana)</label>
+                            <input type="number" name="leadsCalificados" id="leads-calificados" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="leads-convertidos" class="form-label">Leads Convertidos (Semana)</label>
+                            <input type="number" name="leadsConvertidos" id="leads-convertidos" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="conversaciones-generadas" class="form-label">Conversaciones Generadas (Semana)</label>
+                            <input type="number" name="conversacionesGeneradas" id="conversaciones-generadas" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="demos-realizados" class="form-label">Demos Realizados (Semana)</label>
+                            <input type="number" name="demosRealizados" id="demos-realizados" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="demos-exitosos" class="form-label">Demos Exitosos (Semana)</label>
+                            <input type="number" name="demosExitosos" id="demos-exitosos" class="form-input" placeholder="0">
+                        </div>
+                    </div>
+
+                    <!-- Columna 3 -->
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2 mb-4">Finanzas y Clientes</h4>
+                        <div>
+                            <label for="clientes-activos-100" class="form-label">Clientes Activos 100% (Semana)</label>
+                            <input type="number" name="clientesActivos100" id="clientes-activos-100" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="clientes-activos-50" class="form-label">Clientes Activos 50% (Semana)</label>
+                            <input type="number" name="clientesActivos50" id="clientes-activos-50" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="clientes-morosos" class="form-label">Clientes Morosos (Semana)</label>
+                            <input type="number" name="clientesMorosos" id="clientes-morosos" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="clientes-perdidos" class="form-label">Clientes Perdidos (Semana)</label>
+                            <input type="number" name="clientesPerdidos" id="clientes-perdidos" class="form-input" placeholder="0">
+                        </div>
+                        <hr class="my-4">
+                        <div>
+                            <label for="cobranza-usd" class="form-label">Cobranza de la Semana ($)</label>
+                            <input type="number" name="cobranzaUSD" id="cobranza-usd" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="cobranza-bcv" class="form-label">Cobranza de la Semana (BCV)</label>
+                            <input type="number" name="cobranzaBCV" id="cobranza-bcv" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="cxc" class="form-label">Cuentas por Cobrar (Saldo)</label>
+                            <input type="number" name="cxc" id="cxc" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="inversion-ads" class="form-label">Inversión Ads de la Semana ($)</label>
+                            <input type="number" name="inversionAds" id="inversion-ads" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="influvideos-vendidos" class="form-label">Influvideos Vendidos (Semana)</label>
+                            <input type="number" name="influvideosVendidos" id="influvideos-vendidos" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="demos-influvideos" class="form-label">Demos de Influvideos (Semana)</label>
+                            <input type="number" name="demosInfluvideos" id="demos-influvideos" class="form-input" placeholder="0">
+                        </div>
+                    </div>
+                    
+                    <!-- Columna 4 -->
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2 mb-4">Análisis por Canal y Resumen</h4>
+                        <div>
+                            <label for="leads-ads" class="form-label">Leads (Ads)</label>
+                            <input type="number" name="leadsAds" id="leads-ads" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="leads-organico" class="form-label">Leads (Orgánico)</label>
+                            <input type="number" name="leadsOrganico" id="leads-organico" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="leads-referido" class="form-label">Leads (Referido)</label>
+                            <input type="number" name="leadsReferido" id="leads-referido" class="form-input" placeholder="0">
+                        </div>
+                        <hr class="my-4">
+                        <div class="mt-4">
+                            <label for="convertidos-ads" class="form-label">Convertidos (Ads)</label>
+                            <input type="number" name="convertidosAds" id="convertidos-ads" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="convertidos-organico" class="form-label">Convertidos (Orgánico)</label>
+                            <input type="number" name="convertidosOrganico" id="convertidos-organico" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="convertidos-referido" class="form-label">Convertidos (Referido)</label>
+                            <input type="number" name="convertidosReferido" id="convertidos-referido" class="form-input" placeholder="0">
+                        </div>
+                        <hr class="my-4">
+                        <div>
+                            <label for="gastos-fijos" class="form-label">Gastos Fijos de la Semana ($)</label>
+                            <input type="number" name="gastosFijos" id="gastos-fijos" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="formas-leads" class="form-label">Formas de Generación de Leads (Semana)</label>
+                            <input type="number" name="formasLeads" id="formas-leads" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="deuda-socio-1" class="form-label">Deuda Amilcar Pinto ($)</label>
+                            <input type="number" name="deudaSocio1" id="deuda-socio-1" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="deuda-socio-2" class="form-label">Deuda Daniel Vergara ($)</label>
+                            <input type="number" name="deudaSocio2" id="deuda-socio-2" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="deuda-socio-3" class="form-label">Deuda Ana Castillo ($)</label>
+                            <input type="number" name="deudaSocio3" id="deuda-socio-3" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="deuda-socio-4" class="form-label">Deuda Hibban Hernandez ($)</label>
+                            <input type="number" name="deudaSocio4" id="deuda-socio-4" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="inversion-total" class="form-label">Inversión Total Acumulada ($)</label>
+                            <input type="number" name="inversionTotal" id="inversion-total" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                    </div>
+
+                    <!-- Columna 5: MRR y Clientes -->
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2 mb-4">MRR por Plan</h4>
+                        <div>
+                            <label for="mrr-mini" class="form-label">MRR Arizon Mini ($)</label>
+                            <input type="number" name="mrrMini" id="mrr-mini" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="mrr-pro" class="form-label">MRR Arizon Pro ($)</label>
+                            <input type="number" name="mrrPro" id="mrr-pro" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="mrr-max" class="form-label">MRR Arizon Max ($)</label>
+                            <input type="number" name="mrrMax" id="mrr-max" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="mrr-wari-mini" class="form-label">MRR Wari Mini ($)</label>
+                            <input type="number" name="mrrWariMini" id="mrr-wari-mini" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="mrr-wari-pro" class="form-label">MRR Wari Pro ($)</label>
+                            <input type="number" name="mrrWariPro" id="mrr-wari-pro" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">Clientes y Satisfacción</h4>
+                        <div>
+                            <label for="clientes-nuevos-activados" class="form-label">Clientes Nuevos Activados</label>
+                            <input type="number" name="clientesNuevosActivados" id="clientes-nuevos-activados" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="churn-semanal" class="form-label">Churn Semanal (Cancelaciones)</label>
+                            <input type="number" name="churnSemanal" id="churn-semanal" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="nps-semanal" class="form-label">NPS Semanal (-100 a 100)</label>
+                            <input type="number" name="npsSemanal" id="nps-semanal" class="form-input" placeholder="0" min="-100" max="100">
+                        </div>
+                        <div class="mt-4">
+                            <label for="health-score-promedio" class="form-label">Health Score Promedio (0-100)</label>
+                            <input type="number" name="healthScorePromedio" id="health-score-promedio" class="form-input" placeholder="85" min="0" max="100">
+                        </div>
+                    </div>
+
+                    <!-- Columna 6: Métricas Avanzadas -->
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2 mb-4">InfluVideos y Ari</h4>
+                        <div>
+                            <label for="influvideos-cola" class="form-label">InfluVideos en Cola</label>
+                            <input type="number" name="influvideosEnCola" id="influvideos-cola" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="influvideos-entregados" class="form-label">InfluVideos Entregados</label>
+                            <input type="number" name="influvideosEntregados" id="influvideos-entregados" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="conversaciones-ari" class="form-label">Conversaciones Atendidas por Ari</label>
+                            <input type="number" name="conversacionesAri" id="conversaciones-ari" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="uptime-ari" class="form-label">Uptime Ari (%)</label>
+                            <input type="number" name="uptimeAri" id="uptime-ari" class="form-input" placeholder="99.5" step="0.1" min="0" max="100">
+                        </div>
+                        <div class="mt-4">
+                            <label for="error-rate-ari" class="form-label">Error Rate Ari (%)</label>
+                            <input type="number" name="errorRateAri" id="error-rate-ari" class="form-input" placeholder="0.2" step="0.1" min="0" max="100">
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">Tiempos y Ciclos</h4>
+                        <div>
+                            <label for="tiempo-onboarding" class="form-label">Tiempo Promedio Onboarding (días)</label>
+                            <input type="number" name="tiempoPromedioOnboarding" id="tiempo-onboarding" class="form-input" placeholder="0" step="0.1">
+                        </div>
+                        <div class="mt-4">
+                            <label for="ciclo-venta-total" class="form-label">Ciclo de Venta Total (días)</label>
+                            <input type="number" name="cicloVentaTotal" id="ciclo-venta-total" class="form-input" placeholder="0" step="0.1">
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">Finanzas Avanzadas</h4>
+                        <div>
+                            <label for="gross-margin" class="form-label">Gross Margin (%)</label>
+                            <input type="number" name="grossMargin" id="gross-margin" class="form-input" placeholder="75" step="0.1" min="0" max="100">
+                        </div>
+                        <div class="mt-4">
+                            <label for="expansion-mrr" class="form-label">Expansion MRR ($)</label>
+                            <input type="number" name="expansionMRR" id="expansion-mrr" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="contraction-mrr" class="form-label">Contraction MRR ($)</label>
+                            <input type="number" name="contractionMRR" id="contraction-mrr" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">Inversión por Canal</h4>
+                        <div>
+                            <label for="inversion-facebook" class="form-label">Inversión Facebook ($)</label>
+                            <input type="number" name="inversionFacebook" id="inversion-facebook" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="inversion-instagram" class="form-label">Inversión Instagram ($)</label>
+                            <input type="number" name="inversionInstagram" id="inversion-instagram" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <div class="mt-4">
+                            <label for="inversion-tiktok" class="form-label">Inversión TikTok ($)</label>
+                            <input type="number" name="inversionTikTok" id="inversion-tiktok" class="form-input" placeholder="0" step="0.01">
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">Soporte y Calidad</h4>
+                        <div>
+                            <label for="tickets-abiertos" class="form-label">Tickets Abiertos</label>
+                            <input type="number" name="ticketsAbiertos" id="tickets-abiertos" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="tickets-resueltos" class="form-label">Tickets Resueltos</label>
+                            <input type="number" name="ticketsResueltos" id="tickets-resueltos" class="form-input" placeholder="0">
+                        </div>
+                        <div class="mt-4">
+                            <label for="csat-score" class="form-label">CSAT Score (1-5)</label>
+                            <input type="number" name="csatScore" id="csat-score" class="form-input" placeholder="4.5" step="0.1" min="1" max="5">
+                        </div>
+                    </div>
+                </div>
+                
+                    <!-- Panel de Errores de Validación -->
+                    <div id="validation-errors-panel" class="hidden bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <h3 class="text-sm font-medium text-red-800">
+                                    Se encontraron errores en los datos
+                                </h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <p class="mb-2">Por favor corrige los siguientes problemas antes de guardar:</p>
+                                    <ul id="validation-errors-list" class="list-disc list-inside space-y-1">
+                                        <!-- Errores se insertan dinámicamente aquí -->
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="ml-auto pl-3">
+                                <button type="button" id="close-validation-panel" class="inline-flex text-red-400 hover:text-red-600">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <!-- Acciones del formulario -->
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-gray-200 mt-6">
+                        <span id="form-message" class="text-sm text-gray-500"></span>
+                        <div class="flex gap-3">
+                            <button type="reset" class="btn btn-secondary">Limpiar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Datos</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="data-management-view" class="hidden space-y-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-900">Administrar datos</h2>
+                        <p class="text-sm text-gray-500">Revisa y edita los registros semanales cargados.</p>
+                    </div>
+                    <button type="button" id="management-go-to-form" class="btn btn-secondary">Ir a carga de datos</button>
+                </div>
+
+                <!-- Barra de Filtros -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                            Filtros
+                        </h3>
+                        <button type="button" id="clear-filters-btn" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            Limpiar filtros
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Filtro por Mes -->
+                        <div>
+                            <label for="filter-month" class="block text-xs font-medium text-gray-700 mb-1">Mes</label>
+                            <select id="filter-month" class="form-select text-sm">
+                                <option value="">Todos los meses</option>
+                                <option value="Enero">Enero</option>
+                                <option value="Febrero">Febrero</option>
+                                <option value="Marzo">Marzo</option>
+                                <option value="Abril">Abril</option>
+                                <option value="Mayo">Mayo</option>
+                                <option value="Junio">Junio</option>
+                                <option value="Julio">Julio</option>
+                                <option value="Agosto">Agosto</option>
+                                <option value="Septiembre">Septiembre</option>
+                                <option value="Octubre">Octubre</option>
+                                <option value="Noviembre">Noviembre</option>
+                                <option value="Diciembre">Diciembre</option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Semana -->
+                        <div>
+                            <label for="filter-week" class="block text-xs font-medium text-gray-700 mb-1">Semana</label>
+                            <select id="filter-week" class="form-select text-sm">
+                                <option value="">Todas las semanas</option>
+                                <option value="0">Semana 1</option>
+                                <option value="1">Semana 2</option>
+                                <option value="2">Semana 3</option>
+                                <option value="3">Semana 4</option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Completitud -->
+                        <div>
+                            <label for="filter-completeness" class="block text-xs font-medium text-gray-700 mb-1">Completitud</label>
+                            <select id="filter-completeness" class="form-select text-sm">
+                                <option value="">Cualquier nivel</option>
+                                <option value="0-25">0-25% (Vacío/Casi vacío)</option>
+                                <option value="25-50">25-50% (Incompleto)</option>
+                                <option value="50-75">50-75% (Parcial)</option>
+                                <option value="75-100">75-100% (Completo)</option>
+                            </select>
+                        </div>
+
+                        <!-- Búsqueda de texto -->
+                        <div>
+                            <label for="filter-search" class="block text-xs font-medium text-gray-700 mb-1">Buscar</label>
+                            <input type="text" id="filter-search" class="form-input text-sm" placeholder="Mes, semana...">
+                        </div>
+                    </div>
+
+                    <!-- Contador de Resultados -->
+                    <div class="mt-3 pt-3 border-t border-gray-200">
+                        <p id="filter-results-count" class="text-sm text-gray-600">
+                            Mostrando <span class="font-semibold" id="filtered-count">0</span> de <span class="font-semibold" id="total-count">0</span> semanas
+                        </p>
+                    </div>
+                </div>
+
+                <div id="data-management-table" class="overflow-x-auto"></div>
+            </div>
+        </section>
+
+    <!-- Modal Duplicar Semana -->
+    <div id="duplicate-week-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="duplicate-modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17l4 4 4-4m-4-5v9" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="duplicate-modal-title">
+                                Duplicar semana
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500" id="duplicate-modal-message">
+                                    Selecciona la semana destino a la que deseas copiar los datos.
+                                </p>
+                                <div class="mt-4">
+                                    <label for="duplicate-month-select" class="block text-sm font-medium text-gray-700 mb-1">Mes destino</label>
+                                    <select id="duplicate-month-select" class="form-select w-full mb-3"></select>
+                                    <label for="duplicate-week-select" class="block text-sm font-medium text-gray-700 mb-1">Semana destino</label>
+                                    <select id="duplicate-week-select" class="form-select w-full"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                    <button type="button" id="duplicate-confirm-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Duplicar
+                    </button>
+                    <button type="button" id="duplicate-cancel-btn" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="confirmation-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            
+            <!-- Modal centrado -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <!-- Icono -->
+                        <div id="modal-icon-container" class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg id="modal-icon" class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        
+                        <!-- Contenido -->
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Título del Modal
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500" id="modal-message">
+                                    Mensaje del modal
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones -->
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                    <button type="button" id="modal-confirm-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Confirmar
+                    </button>
+                    <button type="button" id="modal-cancel-btn" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de Deshacer -->
+    <div id="undo-toast" class="hidden fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-6 py-4 rounded-lg shadow-2xl transform transition-all duration-300">
+        <div class="flex items-center gap-4">
+            <div class="flex-1">
+                <p class="font-medium">Cambios guardados</p>
+                <p class="text-sm text-gray-300">Puedes deshacer en <span id="undo-countdown">30</span>s</p>
+            </div>
+            <button type="button" id="undo-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
+                Deshacer
+            </button>
+            <button type="button" id="undo-close-btn" class="text-gray-400 hover:text-white">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,205 @@
+body {
+    background-color: #f3f4f6;
+    color: #374151;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.kpi-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* === SISTEMA DE ALERTAS VISUALES (SEMÁFORO) === */
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 0.75rem 0 0 0.75rem;
+    background-color: #e5e7eb;
+}
+
+.kpi-card.status-excellent::before {
+    background-color: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.kpi-card.status-good::before {
+    background-color: #22c55e;
+}
+
+.kpi-card.status-warning::before {
+    background-color: #f59e0b;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.kpi-card.status-critical::before {
+    background-color: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+.kpi-card.status-neutral::before {
+    background-color: #6b7280;
+}
+
+/* Indicador de meta cumplida */
+.kpi-target {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+
+.kpi-target.target-achieved {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.kpi-target.target-close {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.kpi-target.target-missed {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.kpi-title {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.kpi-value {
+    color: #111827;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-top: 0.5rem;
+    line-height: 1.2;
+}
+
+.kpi-context {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.kpi-context-positive {
+    color: #059669;
+}
+
+.kpi-context-negative {
+    color: #dc2626;
+}
+
+.kpi-context-neutral {
+    color: #6b7280;
+}
+
+.chart-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-input,
+.form-select {
+    margin-top: 0.25rem;
+    display: block;
+    width: 100%;
+    background-color: #ffffff;
+    border-color: #d1d5db;
+    color: #111827;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    padding: 0.5rem;
+    border-width: 1px;
+    appearance: none;
+}
+
+.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px #dbeafe;
+}
+
+option {
+    background-color: #ffffff;
+    color: #111827;
+}
+
+.btn {
+    font-weight: 700;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 150ms ease-in-out;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover {
+    background-color: #f9fafb;
+}
+
+.btn-ghost {
+    background-color: transparent;
+    color: #6b7280;
+}
+
+.btn-ghost:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
