@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Indicadores - Arizon.ai</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/modern.css">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="assets/js/config.js"></script>
@@ -150,250 +154,250 @@
             <!-- Sección Clientes -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-6 border-b border-gray-200 pb-2">👥 Clientes</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Clientes Activos 100%</h4>
-                    <p id="kpi-clientes-100" class="kpi-value">0</p>
-                    <p id="kpi-clientes-100-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Clientes Activos 100%</h4>
+                    <p id="kpi-clientes-100" class="metric-value">0</p>
+                    <p id="kpi-clientes-100-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Clientes Activos 50%</h4>
-                    <p id="kpi-clientes-50" class="kpi-value">0</p>
-                    <p id="kpi-clientes-50-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Clientes Activos 50%</h4>
+                    <p id="kpi-clientes-50" class="metric-value">0</p>
+                    <p id="kpi-clientes-50-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Clientes Morosos</h4>
-                    <p id="kpi-clientes-morosos" class="kpi-value">0</p>
-                    <p id="kpi-clientes-morosos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Clientes Morosos</h4>
+                    <p id="kpi-clientes-morosos" class="metric-value">0</p>
+                    <p id="kpi-clientes-morosos-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Clientes Perdidos</h4>
-                    <p id="kpi-clientes-perdidos" class="kpi-value">0</p>
-                    <p id="kpi-clientes-perdidos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Clientes Perdidos</h4>
+                    <p id="kpi-clientes-perdidos" class="metric-value">0</p>
+                    <p id="kpi-clientes-perdidos-context" class="metric-comparison"></p>
                 </div>
             </div>
 
             <!-- Sección Leads y Conversiones -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">💡 Leads y Conversiones</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Leads Recibidos (Total)</h4>
-                    <p id="kpi-leads-recibidos" class="kpi-value">0</p>
-                    <p id="kpi-leads-recibidos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Leads Recibidos (Total)</h4>
+                    <p id="kpi-leads-recibidos" class="metric-value">0</p>
+                    <p id="kpi-leads-recibidos-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Leads Calificados (Total)</h4>
-                    <p id="kpi-leads-calificados" class="kpi-value">0</p>
-                    <p id="kpi-leads-calificados-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Leads Calificados (Total)</h4>
+                    <p id="kpi-leads-calificados" class="metric-value">0</p>
+                    <p id="kpi-leads-calificados-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Leads Convertidos (Total)</h4>
-                    <p id="kpi-leads-convertidos" class="kpi-value">0</p>
-                    <p id="kpi-leads-convertidos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Leads Convertidos (Total)</h4>
+                    <p id="kpi-leads-convertidos" class="metric-value">0</p>
+                    <p id="kpi-leads-convertidos-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Conversaciones / Leads</h4>
-                    <p id="kpi-conversaciones-leads" class="kpi-value">0</p>
-                    <p id="kpi-conversaciones-leads-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Conversaciones / Leads</h4>
+                    <p id="kpi-conversaciones-leads" class="metric-value">0</p>
+                    <p id="kpi-conversaciones-leads-context" class="metric-comparison"></p>
                 </div>
             </div>
 
             <!-- Sección Demos y Productos -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">🎥 Demos y Productos</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Demos Realizados</h4>
-                    <p id="kpi-demos-realizados" class="kpi-value">0</p>
-                    <p id="kpi-demos-realizados-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Demos Realizados</h4>
+                    <p id="kpi-demos-realizados" class="metric-value">0</p>
+                    <p id="kpi-demos-realizados-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Demos Exitosos</h4>
-                    <p id="kpi-demos-exitosos" class="kpi-value">0</p>
-                    <p id="kpi-demos-exitosos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Demos Exitosos</h4>
+                    <p id="kpi-demos-exitosos" class="metric-value">0</p>
+                    <p id="kpi-demos-exitosos-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">InfluVideos Vendidos</h4>
-                    <p id="kpi-influvideos-vendidos" class="kpi-value">0</p>
-                    <p id="kpi-influvideos-vendidos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">InfluVideos Vendidos</h4>
+                    <p id="kpi-influvideos-vendidos" class="metric-value">0</p>
+                    <p id="kpi-influvideos-vendidos-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Demos InfluVideos</h4>
-                    <p id="kpi-demos-influvideos" class="kpi-value">0</p>
-                    <p id="kpi-demos-influvideos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Demos InfluVideos</h4>
+                    <p id="kpi-demos-influvideos" class="metric-value">0</p>
+                    <p id="kpi-demos-influvideos-context" class="metric-comparison"></p>
                 </div>
             </div>
 
             <!-- Sección Finanzas y Gastos -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">💰 Finanzas y Gastos</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Cobranza Mensual ($)</h4>
-                    <p id="kpi-cobranza-usd" class="kpi-value">$0</p>
-                    <p id="kpi-cobranza-usd-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Cobranza Mensual ($)</h4>
+                    <p id="kpi-cobranza-usd" class="metric-value">$0</p>
+                    <p id="kpi-cobranza-usd-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Cobranza Mensual (BCV)</h4>
-                    <p id="kpi-cobranza-bcv" class="kpi-value">Bs. 0</p>
-                    <p id="kpi-cobranza-bcv-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Cobranza Mensual (BCV)</h4>
+                    <p id="kpi-cobranza-bcv" class="metric-value">Bs. 0</p>
+                    <p id="kpi-cobranza-bcv-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Cuentas por Cobrar ($)</h4>
-                    <p id="kpi-cxc" class="kpi-value">$0</p>
-                    <p id="kpi-cxc-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Cuentas por Cobrar ($)</h4>
+                    <p id="kpi-cxc" class="metric-value">$0</p>
+                    <p id="kpi-cxc-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Inversión Ads ($)</h4>
-                    <p id="kpi-inversion-ads" class="kpi-value">$0</p>
-                    <p id="kpi-inversion-ads-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Inversión Ads ($)</h4>
+                    <p id="kpi-inversion-ads" class="metric-value">$0</p>
+                    <p id="kpi-inversion-ads-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Gastos Fijos Mensuales ($)</h4>
-                    <p id="kpi-gastos-fijos" class="kpi-value">$0</p>
-                    <p id="kpi-gastos-fijos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Gastos Fijos Mensuales ($)</h4>
+                    <p id="kpi-gastos-fijos" class="metric-value">$0</p>
+                    <p id="kpi-gastos-fijos-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Deuda Socios ($)</h4>
-                    <p id="kpi-deuda-socios" class="kpi-value">$0</p>
-                    <p id="kpi-deuda-socios-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Deuda Socios ($)</h4>
+                    <p id="kpi-deuda-socios" class="metric-value">$0</p>
+                    <p id="kpi-deuda-socios-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Formas Generación Leads</h4>
-                    <p id="kpi-formas-leads" class="kpi-value">0</p>
-                    <p id="kpi-formas-leads-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Formas Generación Leads</h4>
+                    <p id="kpi-formas-leads" class="metric-value">0</p>
+                    <p id="kpi-formas-leads-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Inversión Total Acumulada ($)</h4>
-                    <p id="kpi-inversion-total" class="kpi-value">$0</p>
-                    <p id="kpi-inversion-total-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Inversión Total Acumulada ($)</h4>
+                    <p id="kpi-inversion-total" class="metric-value">$0</p>
+                    <p id="kpi-inversion-total-context" class="metric-comparison"></p>
                 </div>
             </div>
 
             <!-- Sección Producción y Entrega -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">📦 Producción y Entrega</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">InfluVideos en Cola</h4>
-                    <p id="kpi-influvideos-cola" class="kpi-value">0</p>
-                    <p id="kpi-influvideos-cola-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">InfluVideos en Cola</h4>
+                    <p id="kpi-influvideos-cola" class="metric-value">0</p>
+                    <p id="kpi-influvideos-cola-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">InfluVideos Entregados</h4>
-                    <p id="kpi-influvideos-entregados" class="kpi-value">0</p>
-                    <p id="kpi-influvideos-entregados-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">InfluVideos Entregados</h4>
+                    <p id="kpi-influvideos-entregados" class="metric-value">0</p>
+                    <p id="kpi-influvideos-entregados-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Conversaciones Atendidas por Ari</h4>
-                    <p id="kpi-conversaciones-ari" class="kpi-value">0</p>
-                    <p id="kpi-conversaciones-ari-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Conversaciones Atendidas por Ari</h4>
+                    <p id="kpi-conversaciones-ari" class="metric-value">0</p>
+                    <p id="kpi-conversaciones-ari-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Tiempo Promedio Onboarding (días)</h4>
-                    <p id="kpi-tiempo-onboarding" class="kpi-value">0</p>
-                    <p id="kpi-tiempo-onboarding-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Tiempo Promedio Onboarding (días)</h4>
+                    <p id="kpi-tiempo-onboarding" class="metric-value">0</p>
+                    <p id="kpi-tiempo-onboarding-context" class="metric-comparison"></p>
                 </div>
             </div>
 
             <!-- Sección Rentabilidad por Producto -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">💼 Rentabilidad por Producto</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">MRR Total ($)</h4>
-                    <p id="kpi-mrr-total" class="kpi-value">$0</p>
-                    <p id="kpi-mrr-total-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">MRR Total ($)</h4>
+                    <p id="kpi-mrr-total" class="metric-value">$0</p>
+                    <p id="kpi-mrr-total-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">ARR Proyectado ($)</h4>
-                    <p id="kpi-arr" class="kpi-value">$0</p>
-                    <p id="kpi-arr-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">ARR Proyectado ($)</h4>
+                    <p id="kpi-arr" class="metric-value">$0</p>
+                    <p id="kpi-arr-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">MRR Arizon Pro ($)</h4>
-                    <p id="kpi-mrr-pro" class="kpi-value">$0</p>
-                    <p id="kpi-mrr-pro-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">MRR Arizon Pro ($)</h4>
+                    <p id="kpi-mrr-pro" class="metric-value">$0</p>
+                    <p id="kpi-mrr-pro-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">MRR Arizon Max ($)</h4>
-                    <p id="kpi-mrr-max" class="kpi-value">$0</p>
-                    <p id="kpi-mrr-max-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">MRR Arizon Max ($)</h4>
+                    <p id="kpi-mrr-max" class="metric-value">$0</p>
+                    <p id="kpi-mrr-max-context" class="metric-comparison"></p>
                 </div>
             </div>
 
             <!-- Sección Ciclo de Vida del Cliente -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">⏱️ Ciclo de Vida del Cliente</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Clientes Nuevos Activados</h4>
-                    <p id="kpi-clientes-nuevos" class="kpi-value">0</p>
-                    <p id="kpi-clientes-nuevos-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Clientes Nuevos Activados</h4>
+                    <p id="kpi-clientes-nuevos" class="metric-value">0</p>
+                    <p id="kpi-clientes-nuevos-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Churn Semanal</h4>
-                    <p id="kpi-churn-semanal" class="kpi-value">0</p>
-                    <p id="kpi-churn-semanal-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Churn Semanal</h4>
+                    <p id="kpi-churn-semanal" class="metric-value">0</p>
+                    <p id="kpi-churn-semanal-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Churn Rate (%)</h4>
-                    <p id="kpi-churn-rate" class="kpi-value">0%</p>
-                    <p id="kpi-churn-rate-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Churn Rate (%)</h4>
+                    <p id="kpi-churn-rate" class="metric-value">0%</p>
+                    <p id="kpi-churn-rate-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Ciclo de Venta Total (días)</h4>
-                    <p id="kpi-ciclo-venta" class="kpi-value">0</p>
-                    <p id="kpi-ciclo-venta-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Ciclo de Venta Total (días)</h4>
+                    <p id="kpi-ciclo-venta" class="metric-value">0</p>
+                    <p id="kpi-ciclo-venta-context" class="metric-comparison"></p>
                 </div>
             </div>
 
             <!-- Sección Calidad y Experiencia -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">⭐ Calidad y Experiencia</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">NPS Semanal</h4>
-                    <p id="kpi-nps" class="kpi-value">0</p>
-                    <p id="kpi-nps-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">NPS Semanal</h4>
+                    <p id="kpi-nps" class="metric-value">0</p>
+                    <p id="kpi-nps-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Health Score Promedio</h4>
-                    <p id="kpi-health-score" class="kpi-value">0</p>
-                    <p id="kpi-health-score-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Health Score Promedio</h4>
+                    <p id="kpi-health-score" class="metric-value">0</p>
+                    <p id="kpi-health-score-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">CSAT Score</h4>
-                    <p id="kpi-csat" class="kpi-value">0.0</p>
-                    <p id="kpi-csat-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">CSAT Score</h4>
+                    <p id="kpi-csat" class="metric-value">0.0</p>
+                    <p id="kpi-csat-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Uptime Ari (%)</h4>
-                    <p id="kpi-uptime" class="kpi-value">0.0%</p>
-                    <p id="kpi-uptime-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Uptime Ari (%)</h4>
+                    <p id="kpi-uptime" class="metric-value">0.0%</p>
+                    <p id="kpi-uptime-context" class="metric-comparison"></p>
                 </div>
             </div>
 
             <!-- Sección Métricas Estratégicas (Unit Economics) -->
             <h3 class="text-xl font-semibold text-gray-900 col-span-full mb-4 mt-8 border-b border-gray-200 pb-2">📊 Métricas Estratégicas (Unit Economics)</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h4 class="kpi-title">LTV (Lifetime Value)</h4>
-                    <p id="kpi-ltv" class="kpi-value">$0</p>
-                    <p id="kpi-ltv-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">LTV (Lifetime Value)</h4>
+                    <p id="kpi-ltv" class="metric-value">$0</p>
+                    <p id="kpi-ltv-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">LTV:CAC Ratio</h4>
-                    <p id="kpi-ltv-cac-ratio" class="kpi-value">0.0x</p>
-                    <p id="kpi-ltv-cac-ratio-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">LTV:CAC Ratio</h4>
+                    <p id="kpi-ltv-cac-ratio" class="metric-value">0.0x</p>
+                    <p id="kpi-ltv-cac-ratio-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">CAC Payback (meses)</h4>
-                    <p id="kpi-cac-payback" class="kpi-value">0</p>
-                    <p id="kpi-cac-payback-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">CAC Payback (meses)</h4>
+                    <p id="kpi-cac-payback" class="metric-value">0</p>
+                    <p id="kpi-cac-payback-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">Gross Margin (%)</h4>
-                    <p id="kpi-gross-margin" class="kpi-value">0%</p>
-                    <p id="kpi-gross-margin-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">Gross Margin (%)</h4>
+                    <p id="kpi-gross-margin" class="metric-value">0%</p>
+                    <p id="kpi-gross-margin-context" class="metric-comparison"></p>
                 </div>
-                <div class="kpi-card">
-                    <h4 class="kpi-title">NRR (Net Revenue Retention)</h4>
-                    <p id="kpi-nrr" class="kpi-value">0%</p>
-                    <p id="kpi-nrr-context" class="kpi-context"></p>
+                <div class="metric-card">
+                    <h4 class="metric-title">NRR (Net Revenue Retention)</h4>
+                    <p id="kpi-nrr" class="metric-value">0%</p>
+                    <p id="kpi-nrr-context" class="metric-comparison"></p>
                 </div>
                 <div class="kpi-card">
                     <h4 class="kpi-title">Quick Ratio</h4>
