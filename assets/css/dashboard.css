@@ -221,3 +221,86 @@ body.dark .skeleton {
 .skeleton-title { width: 60%; height: 16px; }
 .skeleton-value { width: 40%; height: 40px; margin-top: 0.75rem; }
 .skeleton-context { width: 80%; height: 16px; margin-top: 1rem; }
+
+/* === UNIFICACIÓN DE ESTILO PARA TARJETAS KPI === */
+/* Se alinean las tarjetas KPI al mismo formato de las tarjetas de métricas */
+.kpi-card {
+    background-color: var(--color-card-bg-light);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border-light);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+body.dark .kpi-card {
+    background-color: var(--color-card-bg-dark);
+    border-color: var(--color-border-dark);
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Estados visuales (glow) también disponibles para KPI */
+.kpi-card.status-excellent::after,
+.kpi-card.status-warning::after,
+.kpi-card.status-critical::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    opacity: 0.8;
+}
+
+.kpi-card.status-excellent::after {
+    background: var(--color-positive);
+    box-shadow: 0 0 12px var(--color-positive);
+}
+
+.kpi-card.status-warning::after {
+    background: var(--color-warning);
+    box-shadow: 0 0 12px var(--color-warning);
+}
+
+.kpi-card.status-critical::after {
+    background: var(--color-negative);
+    box-shadow: 0 0 12px var(--color-negative);
+}
+
+/* Títulos, valores y contexto con la misma jerarquía visual */
+.kpi-title {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+body.dark .kpi-title {
+    color: #9ca3af;
+}
+
+.kpi-value {
+    color: #111827;
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-top: 0.5rem;
+    line-height: 1.1;
+    transition: color 0.3s;
+}
+
+body.dark .kpi-value {
+    color: #ffffff;
+}
+
+.kpi-context {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 0.75rem;
+}
